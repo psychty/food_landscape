@@ -67,13 +67,23 @@
 
             <p class = 'good_to_know'>Businesses that are low-risk to public health, for example, newsagents, chemist shops or visitor centres selling pre-wrapped goods that do not require refrigeration and childminders and businesses that offer caring services at home may be inspected by a food safety officer at the local authority but will not recieve a food hygiene rating.</p>
 
-            <p>As this data is openly available, we can use it to identify the food businesses operating across the county and particularly understand how fast food availability varies from area to area. <b>>As data are refreshed on the FSA website daily, this is a near real time representation of food businesses operating locally.</b></p>
+            <p>As this data is openly available, we can use it to identify the food businesses operating across the county and particularly understand how fast food availability varies from area to area. <b>As data are refreshed on the FSA website daily, this is a near real time representation of food businesses operating locally.</b></p>
 
             <p>The data used on this page were last extracted on the 10th June 2022.</p>
 
             <h4>Table of premises inspected by local authority and food business type.</h4>
             <h4>Map of premises inspected</h4>
             TODO we could add other points of interest and functionality to search a postcode, draw a boundary and count the businesses
+
+               <p>You can search for a postcode in the box below for any postcode and the map will zoom into that area.</p>
+    <div class="inputHolder">
+      <input placeholder="Postcode" type="text" id="txtPostcode" />
+      <input type="button" value="Search" id="btnPostcode" />
+    </div>
+    <p id = 'local_pinpoint_1'></p>
+    <p id = 'local_pinpoint_2'></p>
+    
+    
 
             <div class = 'good_to_know'>
                 <p>The FHRS has an overall score from 0 (urgent improvement is required) to 5 (hygeine standards are very good)</p>
@@ -100,56 +110,11 @@
             <p>The estimates are produced by Dr Angelo Moretti (MMU), Dr Adam Whitworth (Univ Sheffield) and Dr Megan Blake (Univ Sheffield) using a regression-based multilevel small area estimation methodology. </p>
             
             <h3>e-Food Deserts Index</h3>
-            <p>Retail-led investment in urban areas may have largely addressed the issue of 'food deserts' . These include rapid growth of inner city and suburban 
-                convenience stores operated by the major retailers, plus growth in discount retailers, the 
-                latter predominantly favouring sites in proximity to relatively more deprived urban 
-                communities. There has also been some recognition that groceries e-commerce (online 
-                ordering of groceries for home delivery) could ‘limit the extent to which food deserts are a 
-                significant problem’ (Corfe, 2018).
-                Urban food deserts may therefore represent an outdated concept. By contrast, declining rural 
-                service and public transport provision may be driving new inequalities in access to groceries, 
-                with rural areas faring worst. This may be particularly true if these areas also lack provision of 
-                groceries home delivery services. Most grocers utilise their existing store infrastructure to 
-                pick, pack and deliver e-commerce orders, determining their own ‘service areas’ (the 
-                geographic extent over which they are willing to deliver), usually based on travel time or 
-                distance from those stores. Thus the availability of groceries e-commerce home deliveries 
-                isn’t uniform, with consumers in some (predominantly remote and rural) neighbourhoods 
-                less-able to benefit from these services.
-                A new form of ‘e-food desert’ may therefore be emerging: remote and rural catchments with 
-                poor ‘access’ to groceries home delivery services. These catchments are already the most 
-                remote from physical store provision and may also be faced with withdrawal of physical 
-                (retail) services. The e-Food Deserts Index (EFDI) was developed to re-assess the presence of 
-                food deserts across Great Britain, accounting for novel notions of groceries home delivery 
-                provision. 
-                It ranks rank small areas (LSOAs1) across Great Britain according to the degree to which these 
-                neighbourhoods experience characteristics associated with poor access to groceries, 
-                accounting for the physical and online supply sides and consumers’ underlying demographic 
-                and socio-economic characteristics.</p>
-                <p>The final index enables LSOAs/DZs to be ranked or grouped into deciles, with lower ranks and 
-                    decile groupings reflecting that an area exhibits more characteristics typically associated with 
-                    food deserts. Due to slight differences in some of the accessibility measures in the Transport 
-                    and Accessibility domain between England & Wales and Scotland, it is not possible to directly 
-                    compare EFDI scores or ranks between England & Wales and Scotland. 
-                    In the case of Scotland, there are no direct measures of access (by car or public transport) to 
-                    food stores – instead these access measures are reported only for ‘retail centres’ which are 
-                    larger clusters of stores and don’t account for stand-alone food stores. These access measures
-                    still provide an excellent indication of relative accessibility of retail services between LSOAs 
-                    and enable us to generate a robust classification for Scotland. Nevertheless, this means that 
-                    DZs in Scotland should not be directly compared to LSOAs in England and Wales in terms of 
-                    ranks or raw scores from the EFDI. 
-                    Figures 1 and 2 highlight the raw index (EFDI Scores) for England & Wales and also for 
-                    Scotland, with Scotland shown separately (as outlined above). We recognise that the detail is 
-                    difficult to see (especially in urban areas) and we recommend users refer to the interactive 
-                    version available as part of CDRC Maps
-                    We highlight that a number of major cities (including Leeds, Newcastle and Cardiff) which 
-                    featured prominently in the urban food deserts debate of the late 1990s and early 2000s still 
-                    exhibit considerable pockets of neighbourhoods exhibiting food desert-like characteristics. 
-                    Yet we also find that contemporary food deserts are an important concept in rural areas too, 
-                    driven by comparatively poorer access to physical foodstore provision in many of these 
-                    localities, exacerbated by poorer coverage (at times no availability) of online groceries. 
-                    We created the EFDI as a by-product of research primarily focussed on online groceries home 
-                    delivery. Specifically we considered the extent to which the incorporation of online groceries 
-                    delivery availability influenced food desert-like characteristics at the neighbourhood level</p>
+            <p>Retail-led investment in urban areas may have largely addressed the issue of 'food deserts' by rapid growth of inner city and suburban convenience stores operated by the major retailers in recent decades, alongside the growth in discount retailers. However, public transport provision in more rural areas may drive new inequalities in access to groceries.</p>
+            <p>Whilst e-commerce (online ordering for home delivery) has been suggested to reduce the impact of food deserts (Corfe, 2018), most grocers utilise their existing infrastructure to pick, pack and deliver orders, determining the geographic extent over which they are willing to deliver.</p>
+            <p>Moreover, consumers need to be able to access methods to order their groceries online, such as a computer or mobile phone and an internet connection.</p>    
+            <p>As a result, home deliveries are not accessible universally with consumers in some (predominantly remote and rural) neighbourhoods less-able to benefit from these services.</p>
+              
             <p>The e-food desert index (EFDI) is a small area (LSOA) indicator measuring the extent to which neighbourhoods exhibit characteristics associated with food deserts across four key drivers of groceries accessibility:</p>
 <ul>
     <li>Proximity and density of grocery retail facilities</li>
@@ -158,7 +123,7 @@
     <li>E-commerce availability and propensity</li>
 </ul>
                
-<p>The index was created in 2018, so is a few years out of date and does not take into account the substantial changes to online grocery provision (home deliveries) resulting from the COVID-19 global pandemic.</p>
+<p>The index was created in 2018, so is a few years out of date and does not take into account the substantial changes, and improvements, to online grocery provision (home deliveries) resulting from the COVID-19 global pandemic.</p>
 
 </section>
 
