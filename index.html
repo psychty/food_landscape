@@ -67,15 +67,23 @@
 
             <p class = 'good_to_know'>Businesses that are low-risk to public health, for example, newsagents, chemist shops or visitor centres selling pre-wrapped goods that do not require refrigeration and childminders and businesses that offer caring services at home may be inspected by a food safety officer at the local authority but will not recieve a food hygiene rating.</p>
 
-            <p>As this data is openly available, we can use it to identify the food businesses operating across the county and particularly understand how fast food availability varies from area to area. <b>As data are refreshed on the FSA website daily, this is a near real time representation of food businesses operating locally.</b></p>
+            <p>Data collected include the geographical coordinates, inspection score, and business type of all businesses/premises where food is consumed, sold or provided. As this data is openly available, we can use it to identify the food businesses operating across the county and particularly understand how food availability varies from area to area. <b>As data are refreshed on the FSA website daily, this is a near real time representation of food businesses operating locally.</b></p>
 
             <p>The data used on this page were last extracted on the 10th June 2022.</p>
+
+<!-- <p>The term 'fast food' means different things to different people and covers a range of outlets that include, but are not limited to, burger bars, kebab and chip shops and sandwich shops. It is likely that the data does not show the complete picture for fast food outlets. Many of the outlets that could be considered 'fast food' are likely to be multi-functional; sit-down and eat in, takeaway and home delivery.</p> -->
+<p>As a result businesses may have been recorded under the category of restaurant or café which would mean they are not considered here despite selling similar types of food to those included in this analysis.</p>
+
+<p class = good_to_know>Some cleaning of the Food Standards Agency has been conducted on the dataset to correct obvious errors in geolocation information. For example, a handfull of West Sussex premises had geocodes that placed them in other parts of the UK. However, it is possible that other errors persist and it is not possible to screen every record. Overall, the FHRS dataset from FSA is considered robust for spacial analysis (Kirkman et al, 2021) despite .</p>
 
             <h4>Table of premises inspected by local authority and food business type.</h4>
             <h4>Map of premises inspected</h4>
             TODO we could add other points of interest and functionality to search a postcode, draw a boundary and count the businesses
+            We could include LSOA level information, in a table or map that has pop density and number or premises.
 
-               <p>You can search for a postcode in the box below for any postcode and the map will zoom into that area.</p>
+<div id = 'map_1_id'></div>
+
+            <p>You can search for a postcode in the box below for any postcode and the map will zoom into that area.</p>
     <div class="inputHolder">
       <input placeholder="Postcode" type="text" id="txtPostcode" />
       <input type="button" value="Search" id="btnPostcode" />
@@ -131,6 +139,7 @@
 
     <h1>References</h1>
     <p>Cooksey-Stowers, K., Schwartz, M. B., & Brownell, K. D. (2017). Food Swamps Predict Obesity Rates Better Than Food Deserts in the United States. International journal of environmental research and public health, 14(11), 1366. https://doi.org/10.3390/ijerph14111366</p>
+    <p>Kirkman, S., Hollingsworth, B., Lake, A., Hinke, S., Sorrell, S., Burgoine, T., Brown, H. (2021). Field validity and spatial accuracy of Food Standards Agency Food Hygiene Rating scheme data for England, Journal of Public Health, Volume 43, Issue 4, December 2021, Pages e720–e727, https://doi.org/10.1093/pubmed/fdaa172</p>
     <p>Shaw, H. J. (2006). Food Deserts: Towards the Development of a Classification. Geografiska Annaler. Series B, Human Geography, 88(2), 231–247. http://www.jstor.org/stable/3878390</p>
 </section>
 

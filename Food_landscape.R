@@ -7,7 +7,6 @@ source_directory <- paste0(github_repo_dir, '/data')
 output_directory <- paste0(github_repo_dir, '/outputs')
 
 # Food standards agency API ####
-
 route_path <- 'http://ratings.food.gov.uk/OpenDataFiles/'
 xml_paths <- c('FHRS323en-GB', 'FHRS324en-GB', 'FHRS325en-GB', 'FHRS326en-GB', 'FHRS327en-GB', 'FHRS328en-GB', 'FHRS329en-GB')
 
@@ -28,12 +27,15 @@ final_food_hygeine_df <- xmldf_1 %>%
   bind_rows(xmldf_6) %>%  
   bind_rows(xmldf_7) %>% 
   mutate(lat_position = ifelse(is.na(Geocode), NA, as.numeric(regexpr('.', substr(Geocode, 4, nchar(Geocode)),fixed = TRUE))+1)) %>% 
-  mutate(longitude = ifelse(is.na(Geocode), NA, substr(Geocode, 1, (lat_position -1)))) %>% 
-  mutate(latitude = ifelse(is.na(Geocode), NA, substr(Geocode, lat_position, nchar(Geocode)))) %>% 
-  select(lat_position, Geocode, longitude, latitude)
+  mutate(longitude = as.numeric(ifelse(is.na(Geocode), NA, substr(Geocode, 1, (lat_position -1))))) %>% 
+  mutate(latitude = as.numeric(ifelse(is.na(Geocode), NA, substr(Geocode, lat_position, nchar(Geocode))))) 
 
+unique(final_food_hygeine_df$BusinessType)
 
-unique(nchar(final_food_hygeine_df$Geocode))
+chosen_outlets <- final_food_hygeine_df %>% 
+  filter(BusinessType %in% c('Restaurant/Cafe/Canteen', 'Mobile caterer', 'Takeaway/sandwich shop', 'Pub/bar/nightclub')) %>% 
+  mutate(latitude = ifelse(FHRSID == '917215', 50.7823345, ifelse(FHRSID == '1087421', 50.8354062, latitude))) %>% 
+  mutate(longitude = ifelse(FHRSID== '917215', -0.6714866, ifelse(FHRSID == '1087421', -0.7738526, longitude)))
 
 # Rating areas ####
 # Hygienic food handling  (Hygiene)
@@ -45,30 +47,17 @@ unique(nchar(final_food_hygeine_df$Geocode))
 # Management of food safety (ConfidenceInManagement)
 # System or checks in place to ensure that food sold or served is safe to eat, evidence that staff know about food safety, and the food safety officer has confidence that standards will be maintained in future.
 # 
-# getColor <- function(GPs_inside_boundary_data) {
-#   sapply(GPs_inside_boundary_data$Prescribing_setting, function(Prescribing_setting) {
-#     if(Prescribing_setting == "GP Practice") {
-#       "green"
-#     } else if(Prescribing_setting == "Prison") {
-#       "orange"
-#     } else {
-#       "red"
-#     } })
-# }
-# 
-# FSAicons <- awesomeIcons(
-#   icon = 'dot-circle-o ',
-#   iconColor = 'white',
-#   library = 'fa',
-#   markerColor = getColor(GPs_inside_boundary_data)
-# )
 
 leaflet() %>% 
-  addTiles(urlTemplate = "http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png",attribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <br>Contains National Statistics data ? Crown copyright and database right (2017)') %>%
-  addPolygons(data = LSOAs_map, stroke = TRUE, weight = 2, color = "#1a0dab", fill = "#1a0dab", fillOpacity = 0.2, popup = paste("LSOA Name: ",LSOAs_map@data$lsoa11nm, "<br>LSOA Code: ", LSOAs_map@data$lsoa11cd, sep = ""), group = "Show LSOAs") %>% 
-  addPolygons(data = DementiaSupport_boundary, stroke = TRUE, weight = 2, color = "#7a1212", fill = "#7a1212", fillOpacity = 0.2, popup = DementiaSupport_boundary@data$area, group = "Show boundary") %>%
-  addLayersControl(baseGroups = c("Show LSOAs", "Show boundary"),overlayGroups = c("Show GPs"),options = layersControlOptions(collapsed = FALSE)) %>%
-  addAwesomeMarkers(GPs_inside_boundary_data, lng = GPs_inside_boundary_data$long, lat = GPs_inside_boundary_data$lat, group = "Show GPs", popup = paste(GPs_inside_boundary_data$Name, sep = ""), icon=GPicons)
+  addTiles() %>% 
+  addMarkers(data = chosen_outlets,
+             lat = ~latitude,
+             lng = ~longitude,
+             popup = paste0(chosen_outlets$BusinessName, ' ', chosen_outlets$LocalAuthorityName))
+
+ # addPolygons(data = LSOAs_map, stroke = TRUE, weight = 2, color = "#1a0dab", fill = "#1a0dab", fillOpacity = 0.2, popup = paste("LSOA Name: ",LSOAs_map@data$lsoa11nm, "<br>LSOA Code: ", LSOAs_map@data$lsoa11cd, sep = ""), group = "Show LSOAs") %>% 
+  # addLayersControl(baseGroups = c("Show LSOAs", "Show boundary"),overlayGroups = c("Show GPs"),options = layersControlOptions(collapsed = FALSE)) %>%
+  # addAwesomeMarkers(GPs_inside_boundary_data, lng = GPs_inside_boundary_data$long, lat = GPs_inside_boundary_data$lat, group = "Show GPs", popup = paste(GPs_inside_boundary_data$Name, sep = ""), icon=GPicons)
 
 
 
@@ -87,3 +76,9 @@ ff_density_ward <- read_excel("food_landscape/data/ff_density.xlsx",
 e_food_desert_index <- read_csv('https://data.cdrc.ac.uk/sites/default/files/efdi_england.csv')
 
 # userguide = https://data.cdrc.ac.uk/sites/default/files/efdi_userguide.pdf
+
+
+# Adult Food Insecurity Index
+
+
+https://drive.google.com/file/d/1_arVrQ9Y3t_26E28888SBv7QH5Aax2Zs/view
