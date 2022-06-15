@@ -9,6 +9,9 @@ var fhrs_geojson = $.ajax({
       alert(xhr.statusText);
     },
   });
+
+
+  
   
   window.onload = () => {
     // loadTable_pcn_numbers_in_quintiles(PCN_deprivation_data);
@@ -31,7 +34,6 @@ var fhrs_geojson = $.ajax({
   var formatPercent = d3.format(".1%");
   var formatPercent_1 = d3.format(".0%");
   
-
   // function lsoa_deprivation_colour(feature) {
   //   return {
   //     fillColor: lsoa_covid_imd_colour_func(feature.properties.IMD_2019_decile),
@@ -51,44 +53,22 @@ var fhrs_geojson = $.ajax({
   //   }
   // }
   
-  // Define the background tiles for our maps 
-  // This tile layer is coloured
-  // var tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+// L. is leaflet
+var tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+var tileUrl_bw = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+
+var attribution =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Contains Ordnance Survey data © Crown copyright and database right 2022';
+
+// Specify that this code should run once the PCN_geojson data request is complete
+$.when(fhrs_geojson).done(function () {
   
-  // This tile layer is black and white
-  var tileUrl = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
-  // Define an attribution statement to go onto our maps
-  var attribution =
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Contains Ordnance Survey data © Crown copyright and database right 2022';
-  
-  // Specify that this code should run once the PCN_geojson data request is complete
-  $.when(fhrs_geojson).done(function () {
-  
-  // Create a leaflet map (L.map) in the element map_1_id
-  var map_1 = L.map("map_1_id");
+// Create a leaflet map (L.map) in the element map_1_id
+var map_1 = L.map("map_1_id");
    
-  // add the background and attribution to the map
-  L.tileLayer(tileUrl, { attribution })
-   .addTo(map_1);
-  
-  // var pcn_boundary = L.geoJSON(PCN_geojson.responseJSON, { style: pcn_boundary_colour })
-  //  .addTo(map_1)
-  //  .bindPopup(function (layer) {
-  //     return (
-  //       "Primary Care Network: <Strong>" +
-  //       layer.feature.properties.PCN_Code +
-  //       " " +
-  //       layer.feature.properties.PCN_Name +
-  //       "</Strong>"
-  //     );
-  //  });
-  
-  // map_1.fitBounds(pcn_boundary.getBounds());
-  
-  // TODO fix gp markers
-  // This loops through the dataframe and plots a marker for every record.
-  
-  var pane1 = map_1.createPane('markers1');
+// add the background and attribution to the map
+L.tileLayer(tileUrl, { attribution })
+ .addTo(map_1);
   
    for (var i = 0; i < fhrs_geojson.length; i++) {
    gps = new L.circleMarker([fhrs_geojson[i]['lat'], fhrs_geojson[i]['long']],
@@ -103,13 +83,34 @@ var fhrs_geojson = $.ajax({
       .addTo(map_1) 
      }
   
-      var baseMaps_map_1 = {
-        "Show premises boundary": pcn_boundary,
-        // "Show GP practices": markers1, 
-      };
+      // var baseMaps_map_1 = {
+      //   "Show premises": markers1, 
+      // };
     
-       L.control
-       .layers(null, baseMaps_map_1, { collapsed: false })
-       .addTo(map_1);
+      //  L.control
+      //  .layers(null, baseMaps_map_1, { collapsed: false })
+      //  .addTo(map_1);
+
+
   
+// var legend_le_map = L.control({position: 'bottomright'});
+// legend_le_map.onAdd = function (map) {
+    
+//        var div = L.DomUtil.create('div', 'info legend'),
+//             grades = [70, 72.5, 75, 77.5, 80, 82.5, 85, 87.5, 90],
+//             labels = ['Life expectancy<br>at birth (years)'];
+    
+//        for (var i = 0; i < grades.length; i++) {
+//             div.innerHTML +=
+//             labels.push(
+//                 '<i style="background:' + getLEColor(grades[i] + 1) + '"></i> ' +
+//                 grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + ' years' : '+ years'));
+//        }
+//        div.innerHTML = labels.join('<br>');
+//        return div;
+//     };
+    
+//     legend_le_map.addTo(map);
+
+  map_1.fitBounds(lsoa_boundary.getBounds());
   });

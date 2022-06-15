@@ -2,6 +2,11 @@
     font-family: 'Roboto', 'Open Sans', sans-serif;
   }
   
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 3rem;
+  }
+  
   body {
     -webkit-text-size-adjust: none;
     width: 80%;

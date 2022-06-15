@@ -10,10 +10,12 @@
         <title>Food lanscape of West Sussex</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css", type="text/css"/>
         <link rel="stylesheet" type="text/css" href="style.css" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,500&display=swap" rel="stylesheet">
+
     </head>
     <body>
 
@@ -22,9 +24,11 @@
         <main>
   
         <section id = 'introduction' style = 'padding-top: 5vh;'> 
+
             <p class = 'good_to_know'>Note: this page is not currently accessibility friendly, due to some of the interactive elements on some figures and the maps. We are working to create a print and screen reader friendly version of the site as soon as possible. If you need help with any part of the analyses below, please email jsna[at]westsussex.gov.uk</p>
-            <h1>An analysis to support the understanding food landscapes in West Sussex.</h1>
-            <p>This analyses brings together publicly available datsets to primarily support work on nutrition and obesity in West Sussex. Many of the datasets are reproduced here under the terms of the Open Government Licence v.3.0. Other data sources are specified throughtout the report.</p>
+       
+            <h1>An analysis to support the understanding food landscapes in West Sussex</h1>
+            <p>This analyses brings together publicly available datsets to primarily support work on nutrition and obesity in West Sussex. Many of the datasets are reproduced here under the terms of the Open Government Licence v.3.0. Other data sources are specified throughtout the report. The analyses contained here was created by Dr Rich Tyler, and Dr Verity Pinkney, of the West Sussex Public Health and Social Research Unit.</p>
 
             <h4>Concepts of deserts and swamps</h4>
             <p>A food desert is a term often used to describe areas where people experience physical (e.g. transport) and economic barriers to accessing affordable, healthy and quality food (Shaw, 2006). This can be the absence of outlets or absence of means to get to and retrieve food supplies.</p>
@@ -32,17 +36,19 @@
             <p>In the UK, there are several data sets relating to food outlets from a food standards perspective that can be leveraged to consider availability of food alongside measures of healthy weight, nutrition and obesity.</p>
           
             <div class = 'good_to_know'>
-                <h3>The impact of COVID-19</h3>
-                <p>Some of the datasets described in this report were collected prior to the COVID-19 global pandemic. We know that the pandemic changed the way we live our lives and global supply chains and services have had to adapt to protect consumers.</p>
-                <p>The pandemic brought about spikes in demand for food supplies almost overnight that demand could not keep up with initially. As people were isolating and staying away from public spaces such as shops, e-commerce and home delivery service use soared.</p>
-                <p>In many ways this has helped to reduce inequalities in access to good quality food. However, not everyone has access to online services and there are still some parts of the country that are underserved.</p>
+              <h3>The impact of COVID-19</h3>
+              <p>Some of the datasets described in this report were collected prior to the COVID-19 global pandemic. We know that the pandemic changed the way we live our lives and global supply chains and services have had to adapt to protect consumers.</p>
+              <p>The pandemic brought about spikes in demand for food supplies almost overnight that demand could not keep up with initially. As people were isolating and staying away from public spaces such as shops, e-commerce and home delivery service use soared.</p>
+              <p>In many ways this has helped to reduce inequalities in access to good quality food. However, not everyone has access to online services and there are still some parts of the country that are underserved.</p>
             </div>
             
         </section>
 
         <section id = 'prevalence'>
-            <h1>What do we know about the prevalence of obesity and healthy weight in West Sussex?</h1>
 
+            
+            <h1>What do we know about the prevalence of obesity and healthy weight in West Sussex?</h1>
+TODO
             <p>Many of these indicators are compiled by the Office for Health Improvement and Disaprities (OHID)</p>
             <p>Reception age children: healthy weight, overweight (inc obesity), obesity only 2019/20</p>
             <p>Year six age children: healthy weight, overweight (inc obesity), obesity only 2019/20</p>
@@ -58,38 +64,50 @@
         <section id = 'food_businesses' style="padding-top: 5vh;">
         
             <h1>Food businesses</h1>
-            <p>In the UK, all types of food and drink businesses selling food directly to the public are required to be registered with their local authority. This includes  food businesses trading from physical customer-facing premises, from home, a mobile unit or temporary premises such as a stall of van, or through online or distance selling. Each premises must be registered with the appropriate local authority.</p>
-            <p>In addition to catering services, nurseries, schools, and care homes are also required to register with the local authority if they serve food.</p>
+            <p>In the UK, all types of food and drink businesses selling food directly to the public are required to be registered with their local authority. This includes food businesses trading from physical customer-facing premises, from home, a mobile unit, or temporary premises such as a stall or van, or through online selling. Each premises must be registered with the appropriate local authority. In addition to catering services, nurseries, schools, and care homes are also required to register with the local authority if they serve food.</p>
 
-            <p>The Food Standards Agency (FSA), an independent government department, was established in 2000 to protect public health and consumer interests in relation to food in England, Wales, and Northern Ireland. The organisation regulates food businesses in terms of food safety and food production standards with regards to environmental concerns and animal welfare.</p>
+            <p>The Food Standards Agency (FSA), an independent government department, was established in 2000 to protect public health and consumer interests in relation to food in England, Wales, and Northern Ireland. The organisation regulates food businesses in terms of food safety and food production standards.</p>
 
-            <p>The FSA operates the Food Hygiene Rating Scheme (FHRS) in partnership with local authorities and provides information to the public on the hygiene standards in food premises at the time of local authority inspections to check compliance with legal requirements. The ratings information, giving a score from 0 to 5 is publicly available and premises are encouraged to display the food hygiene ratings for consumers to see. For more information on the FSA and the FHRS see the <a href = 'https://www.food.gov.uk/safety-hygiene/food-hygiene-rating-scheme'>Food Standards Agency website</a></p>
+            <p>The FSA operates the Food Hygiene Rating Scheme (FHRS) in partnership with local authorities and provides overall ratings results to the public as at the time of local authority inspections to check compliance with legal requirements. The ratings information, giving a score from 0 to 5 is publicly available and premises are encouraged to display the food hygiene ratings for consumers to see. For more information on the FSA and the FHRS see the <a href = 'https://www.food.gov.uk/safety-hygiene/food-hygiene-rating-scheme'>Food Standards Agency website</a></p>
 
-            <p class = 'good_to_know'>Businesses that are low-risk to public health, for example, newsagents, chemist shops or visitor centres selling pre-wrapped goods that do not require refrigeration and childminders and businesses that offer caring services at home may be inspected by a food safety officer at the local authority but will not recieve a food hygiene rating.</p>
+            <!-- <p class = 'good_to_know'>Businesses that are low-risk to public health such as newsagents, chemist shops or visitor centres selling pre-wrapped non-refrigerated goods and childminders and businesses that offer caring services at home may be inspected by a food safety officer at the local authority but will not recieve a food hygiene rating.</p> -->
 
             <p>Data collected include the geographical coordinates, inspection score, and business type of all businesses/premises where food is consumed, sold or provided. As this data is openly available, we can use it to identify the food businesses operating across the county and particularly understand how food availability varies from area to area. <b>As data are refreshed on the FSA website daily, this is a near real time representation of food businesses operating locally.</b></p>
 
-            <p>The data used on this page were last extracted on the 10th June 2022.</p>
+            <p>The data used on this page were last extracted on the 15th June 2022.</p>
+
+            <p>The table below shows the number of FHRS inspected premises in each local authority in West Sussex by business type.</p>
+            <h4>Table of premises inspected by local authority and food business type.</h4>
+
+
+
+            <h4>Recreating 'fast food density' mapping</h4>
+            <p>In 2018, the then Public Health England</p>
+
+
+
 
 <!-- <p>The term 'fast food' means different things to different people and covers a range of outlets that include, but are not limited to, burger bars, kebab and chip shops and sandwich shops. It is likely that the data does not show the complete picture for fast food outlets. Many of the outlets that could be considered 'fast food' are likely to be multi-functional; sit-down and eat in, takeaway and home delivery.</p> -->
 <p>As a result businesses may have been recorded under the category of restaurant or café which would mean they are not considered here despite selling similar types of food to those included in this analysis.</p>
 
 <p class = good_to_know>Some cleaning of the Food Standards Agency has been conducted on the dataset to correct obvious errors in geolocation information. For example, a handfull of West Sussex premises had geocodes that placed them in other parts of the UK. However, it is possible that other errors persist and it is not possible to screen every record. Overall, the FHRS dataset from FSA is considered robust for spacial analysis (Kirkman et al, 2021) despite .</p>
 
-            <h4>Table of premises inspected by local authority and food business type.</h4>
+          
             <h4>Map of premises inspected</h4>
             TODO we could add other points of interest and functionality to search a postcode, draw a boundary and count the businesses
             We could include LSOA level information, in a table or map that has pop density and number or premises.
 
 <div id = 'map_1_id'></div>
 
-            <p>You can search for a postcode in the box below for any postcode and the map will zoom into that area.</p>
-    <div class="inputHolder">
-      <input placeholder="Postcode" type="text" id="txtPostcode" />
-      <input type="button" value="Search" id="btnPostcode" />
-    </div>
-    <p id = 'local_pinpoint_1'></p>
-    <p id = 'local_pinpoint_2'></p>
+<p>You can search for a postcode in the box below for any postcode and the map will zoom into that area.</p>
+
+<div class="inputHolder">
+   <input placeholder="Postcode" type="text" id="txtPostcode" />
+   <input type="button" value="Search" id="btnPostcode" />
+</div>
+
+<p id = 'local_pinpoint_1'></p>
+<p id = 'local_pinpoint_2'></p>
     
     
 
