@@ -249,7 +249,7 @@ rm(xmldf_1, xmldf_2, xmldf_3, xmldf_4, xmldf_5, xmldf_6, xmldf_7, lookup_result,
 
 geojson_write(geojson_json(outlets_spdf), file = paste0(output_directory, '/fhrs_west_sussex.geojson'))
 
-geojson_write(geojson_json(lsoa_df_final), file = paste0(output_directory, '/fhrs_west_sussex_lsoa_summary.geojson'))
+geojson_write(ms_simplify(geojson_json(lsoa_df_final), keep = .2), file = paste0(output_directory, '/fhrs_west_sussex_lsoa_summary.geojson'))
 
 # 2018 fast food density by ward and ltla ####
 

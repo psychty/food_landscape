@@ -79,7 +79,11 @@ $.when(fhrs_lsoa_geojson, fhrs_points_geojson).done(function () {
 var lsoa_boundary_1 = L.geoJSON(fhrs_lsoa_geojson.responseJSON, { style: lsoa_fhrs_colour })
 
   // Create a leaflet map (L.map) in the element map_1_id
-var map_1 = L.map("map_1_id", {zoomControl: false , scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false, }); // We have disabled zooming on this map
+var map_1 = L.map("map_1_id", {
+  zoomControl: true , 
+  scrollWheelZoom: true, 
+  doubleClickZoom: true,
+  touchZoom: true, }); // We have disabled zooming on this map
 
 L.control.scale().addTo(map_1); // This adds a scale bar to the bottom left by default
 
