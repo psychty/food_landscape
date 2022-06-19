@@ -72,6 +72,17 @@ var tileUrl_bw = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png
 var attribution =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Contains Ordnance Survey data © Crown copyright and database right 2022';
 
+// These are styles for the markers
+var OutletMarkerOptions = {
+  radius: .01,
+  color: '#000',
+  weight: .01,
+  fillColor: 'green',
+  fillOpacity: 1
+};
+
+
+
 // Specify that this code should run once the fhrs_lsoa_geojson AND fhrs_points_geojson data request are complete
 $.when(fhrs_lsoa_geojson, fhrs_points_geojson).done(function () {
 
@@ -95,6 +106,24 @@ L.tileLayer(tileUrl_coloured, { attribution })
  lsoa_boundary_1.addTo(map_1) // Note that this is the part that draws the polygons on the map itself
  
 map_1.fitBounds(lsoa_boundary_1.getBounds()); // We use the uk_boundary polygons to zoom the map to the whole of the UK. This will happen regardless of whether we use addTo() to draw the polygons
+console.log(fhrs_points_geojson)
+// This plots the geojson file as circlemarkers
+// var outlet_locations = L.geoJSON(fhrs_points_geojson, {
+//   pointToLayer: function (feature, latlng){
+//     return L.circleMarker(latlng, OutletMarkerOptions)
+//   }})
+//   .bindPopup(function (layer) {
+//     return (
+//       "Business name: <Strong>" +
+//         layer.feature.properties.BusinessName +
+//       "</Strong><br>Business type: <Strong>" + 
+//       layer.feature.properties.BusinessType +
+//       "</Strong>" 
+//       )
+//     }) // add tooltip
+  // .addTo(map_1); // draw it on the map
+
+
 
       // var baseMaps_map_1 = {
       //   "Show premises": markers1, 
@@ -126,4 +155,66 @@ map_1.fitBounds(lsoa_boundary_1.getBounds()); // We use the uk_boundary polygons
 //     legend_le_map.addTo(map);
 
   map_1.fitBounds(lsoa_boundary_1.getBounds());
+
+  var marker_chosen = L.marker([0, 0]).addTo(map_1);
+
+  //search event
+  $(document).on("click", "#btnPostcode", function () {
+    var input = $("#txtPostcode").val();
+    var url = "https://api.postcodes.io/postcodes/" + input;
+
+    post(url).done(function (postcode) {
+      var chosen_lsoa = postcode["result"]["lsoa"];
+      var chosen_lat = postcode["result"]["latitude"];
+      var chosen_long = postcode["result"]["longitude"];
+
+      marker_chosen.setLatLng([chosen_lat, chosen_long]);
+      map_1.setView([chosen_lat, chosen_long], 11);
+
+      var fhrs_lsoa_geojson_data_chosen = fhrs_lsoa_geojson.filter(function (d) {
+        return d.LSOA11NM == chosen_lsoa;
+      });
+
+      console.log(fhrs_lsoa_geojson_data_chosen);
+
+      d3.select("#local_pinpoint_1")
+        .data(msoa_summary_data_chosen)
+        .html(function (d) {
+          return d.MSOA11NM + " (" + d.msoa11hclnm + ")";
+        });
+
+    });
   });
+
+  //enter event - search
+  $("#txtPostcode").keypress(function (e) {
+    if (e.which === 13) {
+      $("#btnPostcode").click();
+    }
+  });
+
+  //ajax call
+  function post(url) {
+    return $.ajax({
+      url: url,
+      success: function () {
+        //woop
+      },
+      error: function (desc, err) {
+        $("#result_text").html("Details: " + desc.responseText);
+
+        d3.select("#local_pinpoint_1").html(function (d) {
+          return "The postcode you entered does not seem to be valid, please check and try again.";
+        });
+        d3.select("#local_pinpoint_2").html(function (d) {
+          return "This could be because there is a problem with the postcode look up tool we are using.";
+        });
+      },
+    });
+  }
+});
+
+
+
+
+

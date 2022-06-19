@@ -190,19 +190,98 @@ final_lat <- food_hygeine_df_2 %>%
 
 text_2 <- paste0('The original dataset had geolocation data for ', format(original_lat, big.mark = ','), ' records (', round((original_lat / nrow(food_hygeine_df_final))*100,1), '% of records. We have increased the proportion of records with geolocation data to ', round((final_lat / nrow(food_hygeine_df_final))*100,1),  ', ', format(final_lat, big.mark = ','), ' records.')
 
-food_hygeine_df_final <- food_hygeine_df_2 %>% 
+unique(food_hygeine_df_2$BusinessTypeID)
+
+food_hygeine_la <- food_hygeine_df_2 %>% 
+  filter(BusinessType %in% c('Mobile caterer', 'Takeaway/sandwich shop', 'Retailers - supermarkets/hypermarkets', 'Retailers - other', 'Restaurant/Cafe/Canteen', 'School/college/university', 'Other catering premises')) %>% 
+  group_by(LocalAuthorityName, BusinessType) %>% 
+  summarise(Premises = n()) %>% 
+  mutate(BusinessType = factor(BusinessType, levels = c('Takeaway/sandwich shop', 'Restaurant/Cafe/Canteen', 'Mobile caterer', 'School/college/university', 'Other catering premises', 'Retailers - supermarkets/hypermarkets', 'Retailers - other'))) %>% 
+  mutate(LocalAuthorityName = factor(LocalAuthorityName, levels = c('West Sussex', 'Adur', 'Arun', 'Chichester', 'Crawley', 'Horsham', 'Mid Sussex', 'Worthing'))) %>% 
+  ungroup() %>% 
+  arrange(LocalAuthorityName, BusinessType)
+
+food_hygeine_utla <- food_hygeine_df_2 %>% 
+  filter(BusinessType %in% c('Mobile caterer', 'Takeaway/sandwich shop', 'Retailers - supermarkets/hypermarkets', 'Retailers - other', 'Restaurant/Cafe/Canteen', 'School/college/university', 'Other catering premises')) %>% 
+  mutate(BusinessType = factor(BusinessType, levels = c('Takeaway/sandwich shop', 'Restaurant/Cafe/Canteen', 'Mobile caterer', 'School/college/university', 'Other catering premises', 'Retailers - supermarkets/hypermarkets', 'Retailers - other'))) %>% 
+  mutate(LocalAuthorityName = factor(LocalAuthorityName, levels = c('West Sussex', 'Adur', 'Arun', 'Chichester', 'Crawley', 'Horsham', 'Mid Sussex', 'Worthing'))) %>% 
+  group_by(BusinessType) %>% 
+  summarise(LocalAuthorityName = 'West Sussex',
+         Premises = n()) %>% 
+  ungroup()
+
+la_outlets <- food_hygeine_la %>% 
+  bind_rows(food_hygeine_utla) %>% 
+  mutate(LocalAuthorityName = factor(LocalAuthorityName, levels = c('West Sussex', 'Adur', 'Arun', 'Chichester', 'Crawley', 'Horsham', 'Mid Sussex', 'Worthing'))) %>% 
+  arrange(LocalAuthorityName) %>% 
+  pivot_wider(names_from = 'BusinessType',
+              values_from = 'Premises')
+
+flagged_outlets_df <- food_hygeine_df_2 %>% 
+  filter(!BusinessType %in% c("Distributors/Transporters",
+                            "Farmers/growers",
+                            "Hospitals/Childcare/Caring Premises",
+                            "Hotel/bed & breakfast/guest house",
+                            "Importers/Exporters",
+                            "Manufacturers/packers",
+                            "Pub/bar/nightclub")) %>%
+  mutate(takeaway_flag = ifelse(BusinessType == "Takeaway/sandwich shop", TRUE, FALSE),
+         mobile_caterer_flag = ifelse(grepl("burger|chicken|chip|fish bar|pizza|kebab|india|china|chinese", BusinessName, ignore.case = TRUE) == TRUE & BusinessType == "Mobile caterer", TRUE, FALSE),
+         other_caterer_flag = ifelse(grepl("burger|chicken|chip|fish bar|pizza|kebab|india|china|chinese|mcdonald|burger king|greggs|subway|costa|kfc|pret|starbucks", BusinessName, ignore.case = TRUE) == TRUE & BusinessType %in% c("Other catering premises", "Restaurant/Cafe/Canteen"), TRUE, FALSE),
+         chains_flag = ifelse(grepl("mcdonald|burger king|greggs|subway|costa|kfc|pret|starbucks", BusinessName, ignore.case = TRUE) == TRUE & BusinessType %in% c("Retailers - other","Retailers - supermarkets/hypermarkets", "School/college/university"), TRUE, FALSE)) %>%
+  filter(takeaway_flag == TRUE | mobile_caterer_flag == TRUE |other_caterer_flag == TRUE | chains_flag == TRUE)
+
+text_4 <- paste0('There are ', format(nrow(flagged_outlets_df), big.mark = ','), " outlets that have been identified as 'fast food' from all available records.") 
+
+flagged_outlets_la <- flagged_outlets_df %>% 
+  mutate(LocalAuthorityName = factor(LocalAuthorityName, levels = c('West Sussex', 'Adur', 'Arun', 'Chichester', 'Crawley', 'Horsham', 'Mid Sussex', 'Worthing'))) %>% 
+  group_by(LocalAuthorityName) %>% 
+  summarise(`Flagged as 'fast food'` = n())
+
+flagged_outlets_utla <- flagged_outlets_df %>% 
+  summarise(`Flagged as 'fast food'` = n(),
+            LocalAuthorityName = 'West Sussex')
+
+flagged_outlets_table <- flagged_outlets_la %>% 
+  bind_rows(flagged_outlets_utla)
+
+la_mye <- lsoa_lookup %>% 
+  group_by(LTLA) %>% 
+  summarise(Population = sum(Population, na.rm = TRUE)) %>% 
+  ungroup() 
+
+utla_mye <- lsoa_lookup %>% 
+  summarise(LTLA = 'West Sussex', 
+            Population = sum(Population, na.rm = TRUE))
+
+area_pop <- la_mye %>% 
+  bind_rows(utla_mye)
+
+summary_table <- la_outlets %>% 
+  left_join(flagged_outlets_table, by = 'LocalAuthorityName') %>% 
+  left_join(area_pop, by = c('LocalAuthorityName' = 'LTLA')) %>% 
+  rename(Area = LocalAuthorityName)
+
+summary_table %>% 
+  toJSON() %>% 
+  write_lines(paste0(output_directory, '/outlet_table_ltla'))
+
+flagged_outlets_df_final <- flagged_outlets_df %>% 
   select(FHRSID, LocalAuthorityName, LocalAuthorityBusinessID, BusinessName, AddressLine1, AddressLine2, Postcode, BusinessType, BusinessTypeID, RatingDate, longitude = final_longitude, latitude = final_latitude) %>% # See I can do the rename in select
-  filter(!is.na(latitude)) # keep only records with valid geolocation
+  filter(!is.na(latitude)) 
+
+business_fct <- factor(unique(flagged_outlets_df_final$BusinessType))
+business_colours <- colorFactor(viridis_pal(option = "C", direction = -1)(length(unique(flagged_outlets_df_final$BusinessType))), domain = business_fct)
 
 # TODO filter appropriate business types
 
 # Turn the dataframe into a spatial points dataframe
-xy <- food_hygeine_df_final %>% 
+xy <- flagged_outlets_df_final %>% 
   select(longitude, latitude)
 
 outlets_spdf <- SpatialPointsDataFrame(
   coords = xy, 
-  data = food_hygeine_df_final,
+  data = flagged_outlets_df_final,
   proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
 
 plot(outlets_spdf)
@@ -218,7 +297,6 @@ outlets_spdf <- outlets_spdf %>%
 
 plot(outlets_spdf)
 
-
 lsoa_summary <- outlets_spdf %>% 
   as.data.frame() %>% 
   group_by(LSOA11CD) %>% 
@@ -227,12 +305,12 @@ lsoa_summary <- outlets_spdf %>%
 lsoa_df_final <- lsoa_df %>% 
   left_join(lsoa_summary, by = 'LSOA11CD')
 
-text_3 <- paste0('There are ', format(nrow(outlets_spdf), big.mark = ','), ' records with details of a valid geolocation in West Sussex county.')
+text_3 <- paste0('There are ', format(nrow(outlets_spdf), big.mark = ','), ' filtered records with details of a valid geolocation in West Sussex county.')
 
 leaflet(lsoa_df_final) %>% 
   addTiles() %>% 
   addPolygons(stroke = TRUE,
-              color = 'purple',
+              color = 'maroon',
               weight = 3,
               smoothFactor = 0.3, 
               fillOpacity = 0) %>% 
@@ -240,7 +318,14 @@ leaflet(lsoa_df_final) %>%
                    popup = paste0(outlets_spdf$BusinessName, ' ', outlets_spdf$LocalAuthorityName, '<br><br>', outlets_spdf$BusinessType),
                    stroke = FALSE,
                    fillOpacity = 1,
-                   radius = 4)
+                   radius = 6,
+                   color = ~business_colours(BusinessType))%>%
+  addScaleBar(position = "bottomleft") %>%
+  addLegend(position = 'bottomright',
+            pal = business_colours,
+            values = business_fct,
+            title = 'Food businesses:',
+            opacity = 1)
 
 # tidy up environment
 rm(xmldf_1, xmldf_2, xmldf_3, xmldf_4, xmldf_5, xmldf_6, xmldf_7, lookup_result, lookup_result_x, lookup_result_uncaught, fhrs_postcodes, lsoa_1, lsoa_2, lsoa_3, lsoa_4, lsoa_5, lsoa, food_hygeine_df, food_hygeine_df_2)
@@ -251,13 +336,13 @@ geojson_write(geojson_json(outlets_spdf), file = paste0(output_directory, '/fhrs
 
 geojson_write(ms_simplify(geojson_json(lsoa_df_final), keep = .2), file = paste0(output_directory, '/fhrs_west_sussex_lsoa_summary.geojson'))
 
-# 2018 fast food density by ward and ltla ####
-
-download.file('https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/741411/FastFoodMetadata_LA_Ward.xlsx', paste0(source_directory, '/ff_density.xlsx'), mode = 'wb')
-
-ff_density_ward <- read_excel("food_landscape/data/ff_density.xlsx", 
-                         sheet = "Ward Data", 
-                         skip = 2)
+# # 2018 fast food density by ward and ltla ####
+# 
+# download.file('https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/741411/FastFoodMetadata_LA_Ward.xlsx', paste0(source_directory, '/ff_density.xlsx'), mode = 'wb')
+# 
+# ff_density_ward <- read_excel("food_landscape/data/ff_density.xlsx", 
+#                          sheet = "Ward Data", 
+#                          skip = 2)
 
 
 # e-food desert index ####
@@ -270,4 +355,4 @@ e_food_desert_index <- read_csv('https://data.cdrc.ac.uk/sites/default/files/efd
 # Adult Food Insecurity Index
 
 
-https://drive.google.com/file/d/1_arVrQ9Y3t_26E28888SBv7QH5Aax2Zs/view
+# https://drive.google.com/file/d/1_arVrQ9Y3t_26E28888SBv7QH5Aax2Zs/view

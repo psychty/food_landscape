@@ -72,30 +72,45 @@ TODO
 
             <!-- <p class = 'good_to_know'>Businesses that are low-risk to public health such as newsagents, chemist shops or visitor centres selling pre-wrapped non-refrigerated goods and childminders and businesses that offer caring services at home may be inspected by a food safety officer at the local authority but will not recieve a food hygiene rating.</p> -->
 
-            <p>Data collected include the geographical coordinates, inspection score, and business type of all businesses/premises where food is consumed, sold or provided. As this data is openly available, we can use it to identify the food businesses operating across the county and particularly understand how food availability varies from area to area. <b>As data are refreshed on the FSA website daily, this is a near real time representation of food businesses operating locally.</b></p>
+ <p>Data collected include the geographical coordinates, inspection score, and business type of all businesses/premises where food is consumed, sold or provided. As this data is openly available, we can use it to identify the food businesses operating across the county and particularly understand how food availability varies from area to area. <b>As data are refreshed on the FSA website daily, this is a near real time representation of food businesses operating locally.</b></p>
 
-            <p>The data used on this page were last extracted on the 15th June 2022.</p>
+<p>The data used on this page were last extracted on the 15th June 2022.</p>
 
-            <p>The table below shows the number of FHRS inspected premises in each local authority in West Sussex by business type.</p>
-            <h4>Table of premises inspected by local authority and food business type.</h4>
+<p>The table below shows the number of FHRS inspected premises in each local authority in West Sussex by business type.</p>
 
+<h4>Table of premises inspected by local authority and food business type.</h4>
 
+<p class = 'caption'>Note: this included premises registered to the local authority without any geolocation information about where the business operates.</p>
 
-            <h4>Recreating 'fast food density' mapping</h4>
-            <p>In 2018, the then Public Health England</p>
+<h4>Recreating 'fast food density' mapping</h4>
+<p>In 2018, the then Public Health England used FSA data on inspections to analyse the density of 'fast food' outlets at lower tier local authority and ward level, and they showed that deprived local authorities had a greater density of outlets compared to less deprived areas.</p>
 
+<div class="good_to_know">
+    <p>PHE's 2018 inclusion criteria were:</p>
+    <dl><dt>any takeaway/sandwich shop</dt>
+        <dt>any restaurant/cafe/canteen, mobile caterer, or other catering presmises whose name contains one of the following key terms: </dt>
+        <dd>"burger", "chicken", "chip", "fish bar", "pizza", "kebab", "india", "china", "chinese"</dd>
 
+        <dt>any restaurant, retailer (supermarket/hypermarker or other) or school/college/university premises whose business name was one of eight major chains (names of the chains were not available).</dt>
+    </dl>
+        
+</div>
 
+<p>We have updated this analyses using the FSA data source as at June 2022, and combined it with 2020 population estimates and 2019 area deprivation information at lower layer super super output area level (LSOA). As the major chains included in the analyses were not identified, we have chosen a set of chains we believe represent the top businesses operating 'fast food' outlets in 2022. This was done through searching the FSA data.</p>
 
-<!-- <p>The term 'fast food' means different things to different people and covers a range of outlets that include, but are not limited to, burger bars, kebab and chip shops and sandwich shops. It is likely that the data does not show the complete picture for fast food outlets. Many of the outlets that could be considered 'fast food' are likely to be multi-functional; sit-down and eat in, takeaway and home delivery.</p> -->
-<p>As a result businesses may have been recorded under the category of restaurant or café which would mean they are not considered here despite selling similar types of food to those included in this analysis.</p>
+<p>The original authors note several caveats and limitations which are also applicable to the update.</p>
 
-<p class = good_to_know>Some cleaning of the Food Standards Agency has been conducted on the dataset to correct obvious errors in geolocation information. For example, a handfull of West Sussex premises had geocodes that placed them in other parts of the UK. However, it is possible that other errors persist and it is not possible to screen every record. Overall, the FHRS dataset from FSA is considered robust for spacial analysis (Kirkman et al, 2021) despite .</p>
+<p>The term 'fast food' means different things to different people and covers a range of outlets including burger bars, kebab and chip shops and sandwich shops. The culture and popularity of eating different cuisines, including an increase in mobile catering or 'food trucks/street food', particularly as a result of restrictions on indoor restaurants meant more people were eating food prepared in this way. Whilst mobile caterers are inspected as part of the FHRS, <b>the location in the data may not be reflective of the location(s) they serve food.</b></p>
 
-          
-            <h4>Map of premises inspected</h4>
-            TODO we could add other points of interest and functionality to search a postcode, draw a boundary and count the businesses
-            We could include LSOA level information, in a table or map that has pop density and number or premises.
+<p>Home delivery, again heightened by the pandemic, has led to an even greater choice and availability of fast food, ordered within seconds and delivered directly to the customer. With retailers able to define the boundaries of how far they are willing to deliver food, geographical barriers may be even less relevant.</p>
+    
+<p>As a result, it is likely that the data does not show the complete picture for fast food outlets available in a given neighbourhood area.</p> 
+
+<p class = good_to_know>Some cleaning of the Food Standards Agency has been conducted on the dataset to correct obvious errors in geolocation information. For example, a handfull of West Sussex premises had geocodes that placed them in other parts of the UK. However, it is possible that other errors persist and it is not possible to screen every record. Geolocation within West Sussex was available for around 75% of premesis recorded on the FHRS snapshot as registered to one of the seven district and boroughs in the county. Overall, the FHRS dataset from FSA is considered robust for spacial analysis (Kirkman et al, 2021) despite up to a quarter of premises being unavailable.</p>
+
+<h4>Map of premises inspected</h4>
+   TODO we could add other points of interest and functionality to search a postcode, draw a boundary and count the businesses
+   We could include LSOA level information, in a table or map that has pop density and number or premises.
 
 <div id = 'map_1_id'></div>
 
@@ -112,10 +127,17 @@ TODO
     
 
             <div class = 'good_to_know'>
-                <p>The FHRS has an overall score from 0 (urgent improvement is required) to 5 (hygeine standards are very good)</p>
-                <p>Ratings are a snapshot at the time of inspection and the frequency of inspections varies from around every six months to two years depending on potential public health risk, with businesses posing a higher risk inspected more frequently. Local authorities may monitor businesses in between inspections to ensure they are mainatining hygiene standards. Compaints or new information about a business can trigger investigation and an updated inspection.</p>
-            </div>
-        
+                <h4>Limitations of the analyses</h4>
+                <p>Coverage and accuracy of geolocation data</p>
+                <p>Business type and name searching</p>
+                <p>'Fast food' means different things to different people. For example, it is sometimes associated with a particular type of food. In this instance 'fast food' refers to food that is energy dense and available quickly, therefore it covers a range of outlets that include, but are not limited to, burger bars, kebab and chicken shops, chip shops and pizza outlets.</p>
+                <p>However,mMany of the outlets that could be considered 'fast food' are likely to be multi-functional with dine in, takeaway, and home delivery with vast menus covering other 'healthy foods'. As a result, businesses may have been recorded under the category of restaurant or café which would mean they may not have been included in the analsyses based on the inclusion and exclusion criteria used.</p>
+            </div>    							
+                                                                
+            <h4>Availability of fast food outlets by deprivation score</h4>
+            <p>Scatter plot</p>
+
+
         </section>
 
         <section>
