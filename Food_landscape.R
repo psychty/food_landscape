@@ -1,6 +1,6 @@
 library(easypackages)
 
-libraries(c("readxl", "readr", "plyr", "dplyr", "ggplot2", "png", "tidyverse", "scales", "rgdal", 'rgeos', "tmaptools", 'sp', 'sf', 'maptools', 'leaflet', 'leaflet.extras', 'spdplyr', 'geojsonio', 'rmapshaper', 'jsonlite', 'httr', 'rvest', 'stringr', 'epitools', 'XML', 'xml2', 'PostcodesioR'))
+libraries(c("readxl", "readr", "plyr", "dplyr", "ggplot2", "png", "tidyverse", "scales", "rgdal", 'rgeos', "tmaptools", 'sp', 'sf', 'maptools', 'leaflet', 'leaflet.extras', 'spdplyr', 'geojsonio', 'rmapshaper', 'jsonlite', 'httr', 'rvest', 'stringr', 'epitools', 'XML', 'xml2', 'PostcodesioR', 'tidytext', 'wordcloud'))
 
 github_repo_dir <- "~/GitHub/food_landscape"
 source_directory <- paste0(github_repo_dir, '/data')
@@ -188,7 +188,7 @@ final_lat <- food_hygeine_df_2 %>%
   filter(!is.na(final_latitude)) %>% 
   nrow()
 
-text_2 <- paste0('The original dataset had geolocation data for ', format(original_lat, big.mark = ','), ' records (', round((original_lat / nrow(food_hygeine_df_final))*100,1), '% of records. We have increased the proportion of records with geolocation data to ', round((final_lat / nrow(food_hygeine_df_final))*100,1),  ', ', format(final_lat, big.mark = ','), ' records.')
+text_2 <- paste0('The original dataset had geolocation data for ', format(original_lat, big.mark = ','), ' records (', round((original_lat / nrow(food_hygeine_df_2))*100,1), '% of records. We have increased the proportion of records with geolocation data to ', round((final_lat / nrow(food_hygeine_df_2))*100,1),  ', ', format(final_lat, big.mark = ','), ' records.')
 
 unique(food_hygeine_df_2$BusinessTypeID)
 
@@ -216,6 +216,47 @@ la_outlets <- food_hygeine_la %>%
   arrange(LocalAuthorityName) %>% 
   pivot_wider(names_from = 'BusinessType',
               values_from = 'Premises')
+
+# Analyses of business names ####
+
+selected_types_names <- food_hygeine_df_2 %>% 
+  filter(BusinessType %in% c('Mobile caterer', 'Takeaway/sandwich shop', 'Retailers - supermarkets/hypermarkets', 'Retailers - other', 'Restaurant/Cafe/Canteen', 'School/college/university', 'Other catering premises')) %>% 
+  select(BusinessName) 
+
+name_parts <- selected_types_names %>% 
+  unnest_tokens('Word', 'BusinessName') %>%
+  anti_join(stop_words, by = c("Word" = "word")) %>% # anti_join just keeps the rows common to both data sets
+  mutate(Word = str_replace(Word, "'s", ""))  # We also want to prevent the analysis in showing t and t's as two separate words
+
+name_parts %>% 
+  count(Word, sort = TRUE) %>% 
+  head(15)
+
+name_parts %>%
+  count(Word) %>%
+  with(wordcloud(Word, n, max.words = 500))
+
+text_3 <- paste0('Analysing the words in business names in the FHRS may not help us to decide which additional, if any, names to include with the exceptopn that perhaps bakery, bakes, sweet, ice cream and desserts may be something to consider adding. Instead we can scrape the just eat platform which will give us business brands of food delivery places.')
+
+url_x <- 'https://www.just-eat.co.uk/takeaway/brands/'
+
+page <- read_html(url_x)
+
+just_eat_brands <- page %>% 
+  html_nodes('.name') %>% 
+  html_text()
+
+just_eat_brands
+
+text_4 <- paste0('What does this tell us about anything? Are we missing anything from the nine key words that represent how fast food has changed? Maybe there is a greater ')
+
+
+food_hygeine_df_2 %>% 
+  filter(.$BusinessName %in% just_eat_brands) %>% 
+  view()
+
+
+
 
 flagged_outlets_df <- food_hygeine_df_2 %>% 
   filter(!BusinessType %in% c("Distributors/Transporters",
@@ -354,5 +395,42 @@ e_food_desert_index <- read_csv('https://data.cdrc.ac.uk/sites/default/files/efd
 
 # Adult Food Insecurity Index
 
-
 # https://drive.google.com/file/d/1_arVrQ9Y3t_26E28888SBv7QH5Aax2Zs/view
+
+
+# food banks ####
+
+# https://www.trusselltrust.org/get-help/find-a-foodbank/
+
+# https://www.foodaidnetwork.org.uk/our-members
+# https://www.google.com/maps/d/u/0/viewer?mid=15mnlXFpd8-x0j4O6Ck6U90chPn4bkbWz&ll=54.0948970099395%2C-2.757892499999981&z=6
+
+# Food insecurity lsoa ####
+
+food_insecurity_df <- read_csv('~/GitHub/food_landscape/raw_data/Food Insecurity Risk Indices Simple Sussex.csv') %>% 
+  left_join(read_csv('~/GitHub/food_landscape/raw_data/Food Insecurity Risk Indices Complex Sussex.csv'), by = 'LSOA11CD') %>% 
+  left_join(read_csv('~/GitHub/food_landscape/raw_data/Food Insecurity Risk Indices Structural Sussex.csv'), by = 'LSOA11CD') %>% 
+  left_join(read_csv('~/GitHub/food_landscape/raw_data/Food Insecurity Risk Indices Composition Sussex.csv'), by = 'LSOA11CD')
+
+
+# The University of Southampton has updated its local food insecurity risk index with the latest published data at a smaller geographical scale than previously available. This new multi-dimensional index estimates the relative rank of food insecurity risk across local neighbourhoods in England. All data are open-source. Maps and data by Local Authority are available for download at https://www.mylocalmap.org.uk/iaahealth/.
+
+# The variables selected for these updated indices were informed by interviews with stakeholders in local governments and food aid, We assessed four approaches to estimating risk. The Simple Index illustrates food poverty risk based on benefits claimants and low-income at a household level and is well suited to estimating risk in urban areas. The Complex index incorporates two domains Compositional (50%) Structural (50%). ‘Structural’ sources of food insecurity risk are particularly impactful in rural areas and ‘Compositional’ sources include direct and indirect economic obstacles, reflecting population characteristics within small areas. Using several indicators in the complex index reduces the bias that may be produced from considering only the economic dimension of food insecurity risk. The two domains were assessed independently and then combined to create a food insecurity risk measure for each LSOA, ranked relative to all other LSOAs. 
+
+# Results were assessed for all of England and then by area classification as urban or rural to reflect differing barriers to food security in these settings. The Simple index is correlated well with the IMD 2019 (rs=0.872). 
+
+# Final maps were shared with stakeholders across several local authorities in Wessex and the North of England to compare with food aid uptake and observations of demand, confirming that the Compositional domain provided an accurate estimate of risk in urban areas, with rural areas gaining further insight from the Structural domain. The importance of including data (such as mental health and qualifications) beyond immediate economic circumstances (Simple index) were highlighted in our interviews, which is reflected in the Compositional domain. The Complex index reveals that most areas are not in the highest decile of risk for both composition and Structural domains, however, poor access creates a double burden for households with economic disadvantage in rural locations.
+
+# Rural areas should use both the composition and structural domains side-by-side to assess local issues of rural access. As a relative measure, the ranking of an LSOA is not an absolute measure of household risk but can be used to compare against the ranked conditions found in other LSOAs, particularly useful for illustrating areas at higher risk. 
+
+# Although the index is measured at the neighbourhood level, this area rank may not reflect the situation of every resident living in an LSOA. 
+
+# The updated food insecurity risk measures can be used to estimate household risk in small areas for England, for the purposes of prioritising interventions to address food insecurity, such as food pantries, holiday hunger activities (HAF) and in JSNAs.
+
+# - For most areas, the compositional domain reflects risk well and is the preferred option. 
+# - In rural areas the structural domain can be explored alongside the compositional measure to understand additional barriers to food security.
+
+# Source: Multiple sources: DWP, Census
+# Licence: Open
+# About Dataset: See metadata in About/FAQ and cite as Smith et al., 2021. In all cases, 1 is the lowest risk. If you downloaded Structural Risk data between 1-15 Oct 2021, this has been updated. Please download a new copy.
+# About Column: Simple Risk of Food Insecurity
